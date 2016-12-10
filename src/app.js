@@ -1,33 +1,40 @@
 import $ from 'jquery';
 import Rx from 'rxjs/Rx';
-
-//*********************************************************//
-//***** Exemplo 1 ****************************************//
-const $btn = $('#btn'); // só para economizar algumas linhas
-//Fofoqueiro escutando o Evento 'click'
-const btnStream$ = Rx.Observable.fromEvent($btn,'click');
-/* fofoca sendo gerada e recebendo como parametros ( se a fofoca deu certo , se deu errado ,se fofoca terminou) */
-btnStream$.subscribe(
-  fofoca=>{console.info('A criatura clicou no botão');},
-  zicou=>{console.error(zicou);},
-  ()=>console.log('Fim')
+const numbers = [33, 44, 55, 66, 77];
+const numbers$ = Rx.Observable.from(numbers);
+numbers$.subscribe(
+    v => {
+        console.info(v);
+    },
+    err => {
+        console.log(err);
+    },
+    complete => {
+        console.log('Completed');
+    }
 );
+const posts = [{
+        title: 'Post One',
+        body: 'This is the body of Post One'
+    }, {
+        title: 'Post Two',
+        body: 'This is the body of Post Two'
+    }, {
+        title: 'Post Three',
+        body: 'This is the body of Post Three'
+    }
 
-//********************************************************//
-//******Exemplo 2 ****************************************//
-const $output = $('#output');
-const $input = $('#input');
-const inputStream$ = Rx.Observable.fromEvent($input,'keyup');
-inputStream$.subscribe(
-  evento => {
-    console.log(evento.currentTarget.value);
-    $output.html(evento.currentTarget.value);
-  }
-);
-//*********************************************************//
-//******Exemplo 3 *****************************************//
-const $mouse = $('#mouse');
-const moveStream$ = Rx.Observable.fromEvent(document, 'mousemove');
-moveStream$.subscribe(
-  evento => $mouse.html('<b>X:</b> '+evento.clientX+'<b>Y:</b>'+evento.clientY)
+];
+const posts$ = Rx.Observable.from(posts).subscribe(v => {
+    console.log(v);
+    $('#posts').append(`<li><h3>${v.title}</h3><p>${v.body}</p>`);
+});
+
+const set = new Set(['Hello', 44, {
+    title: 'My title'
+}]);
+const set$ = Rx.Observable.from(set).subscribe(
+    v => {
+        console.log(v);
+    }
 );
