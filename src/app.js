@@ -1,26 +1,29 @@
 import $ from 'jquery';
 import Rx from 'rxjs/Rx';
 
-const source$ = new Rx.Observable(observer => {
-    console.log('Creating Observable');
-    observer.next('Hello World');
-    observer.next('Another Value');
-    observer.error(new Error('Error: Something went wrong'));
+const myPromise = new Promise((resolve, reject) => {
+    console.log('Criando uma promise');
     setTimeout(() => {
-        observer.next('Yet another value');
-        observer.complete();
+        resolve('Olá');
     }, 3000);
 });
-source$
-    .catch(err => Rx.Observable.of(err))
-    .subscribe(
-        x => {
-            console.log(x);
-        },
-        err => {
-            console.error(err);
-        },
-        () => {
-            console.log('Completed')
-        }
-    );
+/**Resolvendo a promise **/
+//myPromise.then((value) => {console.log(value)});
+/*Usando um observable */
+//const source$ = Rx.Observable.fromPromise(myPromise).subscribe(x => console.log(x));
+function getUser(username) {
+    return $.ajax({
+        url: 'https://api.github.com/users/' + username,
+        dataType: 'jsonp'
+    }).promise();
+}
+const input$ = Rx.Observable.fromEvent($('#input'), 'keyup').subscribe(x => {
+
+    Rx.Observable.fromPromise(getUser(x.target.value))
+        .subscribe(x => {
+          console.log(x.data);
+          $('#name').html(x.data.name);
+          $('#email').html(x.data.email);
+        });
+
+});
